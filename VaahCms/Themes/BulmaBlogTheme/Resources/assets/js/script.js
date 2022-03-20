@@ -1,16 +1,16 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
     let base = (document.querySelector('base') || {}).href;
     console.log(base);
 
-    function getBlogList(q = "",category = '') {
+    function getBlogList(q = "", category = '') {
         $.ajax({
             type: 'POST',
-            url: base+'/ajax/getBlogList',
+            url: base + '/ajax/getBlogList',
             data: {
                 "_token": $('#token').val(),
-                "q":q,
-                "category":category
+                "q": q,
+                "category": category
             },
             success: function (data) {
                 $("#blogList").html(data);
@@ -18,8 +18,8 @@ $(document).ready(function() {
         });
     }
 
-    $('#search-blog').on('input', function() {
-        getBlogList($(this).val(),$('#category-filter.is-active').attr('data-category'));
+    $('#search-blog').on('input', function () {
+        getBlogList($(this).val(), $('#category-filter.is-active').attr('data-category'));
     });
 
 
@@ -29,10 +29,10 @@ $(document).ready(function() {
         $('#category-filter').removeClass("is-active");
         $(this).addClass("is-active");
 
-        getBlogList($('#search-blog').val(),this.dataset.category);
+        getBlogList($('#search-blog').val(), this.dataset.category);
     });
 
-    function run(){
+    function run() {
         getBlogList();
     }
 

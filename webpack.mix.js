@@ -11,6 +11,43 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
+// mix.js('resources/js/app.js', 'public/js')
+//     .react()
+//     .sass('resources/sass/app.scss', 'public/css');
+
+/*
+| 
+| CMS themes 
+| BulmaBlogTheme
+|
+*/
+mix.js([
+    'VaahCms/Themes/BulmaBlogTheme/Resources/assets/js/frontend/app.js',
+    'VaahCms/Themes/BulmaBlogTheme/Resources/assets/js/backend/app.js',
+    'VaahCms/Themes/BulmaBlogTheme/Resources/assets/js/script.js',
+], 'public/vaahcms/js/bulmablogtheme.js')
     .react()
-    .sass('resources/sass/app.scss', 'public/css');
+    .sass('resources/sass/app.scss', 'public/css').version().sourceMaps();
+
+
+/*
+| 
+| CMS modules 
+| BulmaBlogTheme
+|
+*/
+mix.js([
+    'VaahCms/Modules/Cms/Resources/assets/js/frontend/app.js',
+    'VaahCms/Modules/Cms/Resources/assets/js/backend/app.js',
+    'VaahCms/Modules/Cms/Resources/assets/js/script.js',
+], 'public/vaahcms/js/bulmablogtheme.js')
+    .react()
+    .sass('resources/sass/app.scss', 'public/css').version().sourceMaps();
+
+// mix.js('resources/js/app.js', 'public/js')
+//     .react()
+//     .sass('resources/sass/app.scss', 'public/css').version().sourceMaps();
+
+// mix.js('resources/js/app.js', 'public/js')
+//     .react()
+//     .sass('resources/sass/app.scss', 'public/css').version().sourceMaps();

@@ -14,7 +14,6 @@
 
 @section('content')
 <div>
-    test ini home page utama
     @include('bulmablogtheme::frontend.partials.header')
     @include('bulmablogtheme::frontend.partials.blog-cards')
     @include('bulmablogtheme::frontend.partials.footer')

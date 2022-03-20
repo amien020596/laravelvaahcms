@@ -1,4 +1,6 @@
-<?php namespace VaahCms\Modules\Cms\Libraries;
+<?php
+
+namespace VaahCms\Modules\Cms\Libraries;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -7,7 +9,8 @@ use VaahCms\Modules\Cms\Entities\ContentType;
 use WebReinvent\VaahCms\Entities\ThemeTemplate;
 use WebReinvent\VaahCms\Entities\User;
 
-class CmsSeeder{
+class CmsSeeder
+{
 
     //-------------------------------------------------------
     public static function getJsonData($file_path)
@@ -24,8 +27,7 @@ class CmsSeeder{
             ->where('slug', $theme_slug)
             ->first();
 
-        if(!$theme)
-        {
+        if (!$theme) {
             $response['status'] = 'failed';
             $response['errors'][] = 'Theme does not exist';
             return $response;
@@ -43,14 +45,13 @@ class CmsSeeder{
             ->where('slug', $slug)
             ->first();
 
-        if(!$theme_location)
-        {
+        if (!$theme_location) {
             $data = [
                 'vh_theme_id'  => $theme->id,
                 'type'  => $type,
                 'name'  => Str::title($slug),
                 'slug'  => $slug,
-                'excerpt'  => Str::title($slug).' of every page',
+                'excerpt'  => Str::title($slug) . ' of every page',
             ];
 
             DB::table('vh_theme_locations')->insert($data);
@@ -65,28 +66,29 @@ class CmsSeeder{
         return $theme_location;
     }
     //-------------------------------------------------------
-    public static function storeSeeds($theme_slug,
-        $table, $list, $primary_key='slug',
-        $create_slug=true, $create_slug_from='name'
-    )
-    {
+    public static function storeSeeds(
+        $theme_slug,
+        $table,
+        $list,
+        $primary_key = 'slug',
+        $create_slug = true,
+        $create_slug_from = 'name'
+    ) {
 
         $theme = self::getTheme($theme_slug);
 
-        if(is_array($theme)
+        if (
+            is_array($theme)
             && isset($theme['status'])
             && $theme['status'] == 'failed'
-        )
-        {
+        ) {
             return $theme;
         }
 
 
 
-        foreach ($list as $item)
-        {
-            if($create_slug)
-            {
+        foreach ($list as $item) {
+            if ($create_slug) {
                 $item['slug'] = Str::slug($item[$create_slug_from]);
             }
 
@@ -99,10 +101,9 @@ class CmsSeeder{
                 ->first();
 
 
-            if(!$record)
-            {
+            if (!$record) {
                 DB::table($table)->insert($item);
-            } else{
+            } else {
                 DB::table($table)->where('vh_theme_id', $theme->id)
                     ->where($primary_key, $item[$primary_key])
                     ->where('type', $item['type'])
@@ -113,25 +114,25 @@ class CmsSeeder{
     //---------------------------------------------------------------
     public static function storeSeedsWithUuid(
         $theme_slug,
-        $table, $list, $primary_key='slug',
-        $create_slug=true, $create_slug_from='name'
-    )
-    {
+        $table,
+        $list,
+        $primary_key = 'slug',
+        $create_slug = true,
+        $create_slug_from = 'name'
+    ) {
 
         $theme = self::getTheme($theme_slug);
 
-        if(is_array($theme)
+        if (
+            is_array($theme)
             && isset($theme['status'])
             && $theme['status'] == 'failed'
-        )
-        {
+        ) {
             return $theme;
         }
 
-        foreach ($list as $item)
-        {
-            if($create_slug)
-            {
+        foreach ($list as $item) {
+            if ($create_slug) {
                 $item['slug'] = Str::slug($item[$create_slug_from]);
             }
 
@@ -143,15 +144,13 @@ class CmsSeeder{
                 ->first();
 
 
-            if(!$record)
-            {
+            if (!$record) {
                 DB::table($table)->insert($item);
-            } else{
+            } else {
                 DB::table($table)->where($primary_key, $item[$primary_key])
                     ->update($item);
             }
         }
-
     }
     //-------------------------------------------------------
     public static function themeLocations($theme_slug, $file_path)
@@ -166,17 +165,17 @@ class CmsSeeder{
 
         $theme = self::getTheme($theme_slug);
 
-        if(is_array($theme)
+        if (
+            is_array($theme)
             && isset($theme['status'])
             && $theme['status'] == 'failed'
-        )
-        {
+        ) {
             return $theme;
         }
 
         $templates = self::getJsonData($file_path);
 
-        foreach ($templates as $template){
+        foreach ($templates as $template) {
 
             $template['template']['slug'] = Str::slug($template['template']['name']);
             $template['template']['vh_theme_id'] = $theme->id;
@@ -185,10 +184,9 @@ class CmsSeeder{
                 ->where('slug', $template['template']['slug'])
                 ->first();
 
-            if(!$template_exist)
-            {
+            if (!$template_exist) {
                 ThemeTemplate::insert($template['template']);
-            } else{
+            } else {
                 ThemeTemplate::where('vh_theme_id', $theme->id)
                     ->where('slug', $template['template']['slug'])
                     ->update($template['template']);
@@ -203,9 +201,7 @@ class CmsSeeder{
 
             //template groups
             ThemeTemplate::syncWithFormGroups($stored_template, $template['groups']);
-
         }
-
     }
     //-------------------------------------------------------
     public static function contentTypes($file_path)
@@ -213,7 +209,7 @@ class CmsSeeder{
 
         $content_types = self::getJsonData($file_path);
 
-        foreach ($content_types as $content_type){
+        foreach ($content_types as $content_type) {
 
             $exist = DB::table('vh_cms_content_types')
                 ->where('slug', $content_type['content']['slug'])
@@ -222,10 +218,9 @@ class CmsSeeder{
             $content_type['content']['uuid'] = Str::uuid();
             $content_type['content']['content_statuses'] = json_encode($content_type['content']['content_statuses']);
 
-            if(!$exist)
-            {
+            if (!$exist) {
                 DB::table('vh_cms_content_types')->insert($content_type['content']);
-            } else{
+            } else {
                 DB::table('vh_cms_content_types')
                     ->where('slug', $content_type['content']['slug'])
                     ->update($content_type['content']);
@@ -240,8 +235,6 @@ class CmsSeeder{
 
             //template groups
             ContentType::syncWithFormGroups($stored, $content_type['groups']);
-
-
         }
     }
     //-------------------------------------------------------
@@ -250,18 +243,17 @@ class CmsSeeder{
 
         $theme = self::getTheme($theme_slug);
 
-        if(is_array($theme)
+        if (
+            is_array($theme)
             && isset($theme['status'])
             && $theme['status'] == 'failed'
-        )
-        {
+        ) {
             return $theme;
         }
 
         $list = self::getJsonData($file_path);
 
-        if(count($list) < 1)
-        {
+        if (count($list) < 1) {
             return false;
         }
 
@@ -269,25 +261,22 @@ class CmsSeeder{
             ->with(['groups.fields.type'])
             ->first()->toArray();
 
-        if(!$content_type)
-        {
+        if (!$content_type) {
             return false;
         }
 
 
-        foreach($list as $item)
-        {
+        foreach ($list as $item) {
             $template = ThemeTemplate::where('vh_theme_id', $theme->id)
                 ->where('slug', $item['template_slug'])
                 ->with(['groups.fields.type'])
                 ->first()->toArray();
 
-            if(!$template)
-            {
+            if (!$template) {
                 continue;
             }
 
-            if(!isset($item['slug']) || !$item['slug']){
+            if (!isset($item['slug']) || !$item['slug']) {
                 $item['slug'] = Str::slug($item['name']);
             }
 
@@ -300,28 +289,27 @@ class CmsSeeder{
 
             $is_permalink_exist = Content::where('permalink', $item['permalink']);
 
-            if(!$content){
+            if (!$content) {
                 $content = new Content();
-            }else{
-                $is_permalink_exist->where('id','!=', $content->id);
+            } else {
+                $is_permalink_exist->where('id', '!=', $content->id);
             }
 
             $is_permalink_exist = $is_permalink_exist->first();
 
-            if($is_permalink_exist){
-                $item['permalink'] = Str::random(10).'-'.$item['permalink'];
+            if ($is_permalink_exist) {
+                $item['permalink'] = Str::random(10) . '-' . $item['permalink'];
             }
 
             $author_id = null;
 
-            if(isset($item['author']) && $item['author']){
+            if (isset($item['author']) && $item['author']) {
 
-                $user = User::where('email',$item['author'])->first();
+                $user = User::where('email', $item['author'])->first();
 
-                if($user){
+                if ($user) {
                     $author_id = $user->id;
                 }
-
             }
 
             $fillable = [
@@ -343,23 +331,21 @@ class CmsSeeder{
             $json_content = array();
             $json_template = array();
 
-            if(isset($item['content'])){
+            if (isset($item['content'])) {
                 $json_content = $item['content'];
             }
 
-            if(isset($item['template'])){
+            if (isset($item['template'])) {
                 $json_template = $item['template'];
             }
 
 
-            $content_groups = self::fillFields($content_type['groups'],$json_content);
-            $template_groups = self::fillFields($template['groups'],$json_template);
+            $content_groups = self::fillFields($content_type['groups'], $json_content);
+            $template_groups = self::fillFields($template['groups'], $json_template);
 
             Content::storeFormGroups($content, [$content_groups]);
             Content::storeFormGroups($content, [$template_groups]);
-
         }
-
     }
     //-------------------------------------------------------
 
@@ -369,37 +355,33 @@ class CmsSeeder{
 
         $faker = \Faker\Factory::create();
 
-        if(count($groups) < 1)
-        {
+        if (count($groups) < 1) {
             return $groups;
         }
 
-        foreach ($groups as $g_key => $group)
-        {
+        foreach ($groups as $g_key => $group) {
 
-            if(count($group['fields']) < 1)
-            {
+            if (count($group['fields']) < 1) {
                 continue;
             }
 
-            foreach ($group['fields'] as $key => $field)
-            {
+            foreach ($group['fields'] as $key => $field) {
 
-                if(isset($json_data[$group['slug']]) && $json_data[$group['slug']]
-                    && isset($json_data[$group['slug']][$field['slug']])){
+                if (
+                    isset($json_data[$group['slug']]) && $json_data[$group['slug']]
+                    && isset($json_data[$group['slug']][$field['slug']])
+                ) {
 
-                        $field['content'] = $json_data[$group['slug']][$field['slug']];
-
-                } elseif(
+                    $field['content'] = $json_data[$group['slug']][$field['slug']];
+                } elseif (
                     isset($field['meta'])
                     && is_object($field['meta'])
                     && isset($field['meta']->default)
-                )
-                {
+                ) {
                     $field['content'] = $field['meta']->default;
-                } else{
+                } else {
 
-                    switch($field['type']['slug']){
+                    switch ($field['type']['slug']) {
 
                         case 'title':
                         case 'text':
@@ -458,7 +440,7 @@ class CmsSeeder{
 
                         case 'json':
 
-                            for($i=0;$i<=10;$i++){
+                            for ($i = 0; $i <= 10; $i++) {
                                 $data[] = [
                                     'id' => $i,
                                     'name' => $faker->name,
@@ -507,7 +489,7 @@ class CmsSeeder{
                             break;
 
                         case 'list':
-                            $field['content'] = [$faker->firstName , $faker->firstName];
+                            $field['content'] = [$faker->firstName, $faker->firstName];
                             break;
 
                         default:
@@ -517,15 +499,11 @@ class CmsSeeder{
                 }
 
                 $groups[$g_key]['fields'][$key] = $field;
-
             }
-
         }
 
 
         return $groups;
-
-
     }
     //-------------------------------------------------------
     public static function setMetaTagContent()
@@ -533,21 +511,27 @@ class CmsSeeder{
         $faker = \Faker\Factory::create();
 
         $data['seo_description'] = self::fillFieldContent(
-            $faker->realText(200, 3),200,
-            'SEO Meta Description','textarea',
-            'Description of content (maximum 200 characters)');
+            $faker->realText(200, 3),
+            200,
+            'SEO Meta Description',
+            'textarea',
+            'Description of content (maximum 200 characters)'
+        );
 
         $data['seo_keywords'] = self::fillFieldContent(
-            $faker->realText(200, 3),200,
-            'SEO Meta Keywords','textarea');
+            $faker->realText(200, 3),
+            200,
+            'SEO Meta Keywords',
+            'textarea'
+        );
 
         $data['seo_title'] = self::fillFieldContent(
-            $faker->text(70),70,
-            'SEO Title');
+            $faker->text(70),
+            70,
+            'SEO Title'
+        );
 
         return $data;
-
-
     }
     //-------------------------------------------------------
     public static function setAddressContent()
@@ -555,36 +539,48 @@ class CmsSeeder{
         $faker = \Faker\Factory::create();
 
         $data['address_line_1'] = self::fillFieldContent(
-            $faker->buildingNumber.' '.$faker->streetName,
-            50, 'Address Line 1');
+            $faker->buildingNumber . ' ' . $faker->streetName,
+            50,
+            'Address Line 1'
+        );
 
         $data['address_line_2'] = self::fillFieldContent(
-            $faker->secondaryAddress,50,
-            'Address Line 2');
+            $faker->secondaryAddress,
+            50,
+            'Address Line 2'
+        );
 
         $data['city'] = self::fillFieldContent(
-            $faker->city,50,
-            'City');
+            $faker->city,
+            50,
+            'City'
+        );
 
         $data['country'] = self::fillFieldContent(
-            $faker->country,20,
-            'Country');
+            $faker->country,
+            20,
+            'Country'
+        );
 
         $data['landmark'] = self::fillFieldContent(
-            $faker->streetName,50,
-            'Landmark');
+            $faker->streetName,
+            50,
+            'Landmark'
+        );
 
         $data['state'] = self::fillFieldContent(
-            $faker->state,50,
-            'State');
+            $faker->state,
+            50,
+            'State'
+        );
 
         $data['zip_code'] = self::fillFieldContent(
-            $faker->postcode,20,
-            'Zip Code');
+            $faker->postcode,
+            20,
+            'Zip Code'
+        );
 
         return $data;
-
-
     }
     //-------------------------------------------------------
     public static function setTwitterContent()
@@ -592,30 +588,40 @@ class CmsSeeder{
         $faker = \Faker\Factory::create();
 
         $data['twitter_description'] = self::fillFieldContent(
-            $faker->realText(200, 3),200,
-            'twitter:description','textarea',
-            'Description of content (maximum 200 characters)');
+            $faker->realText(200, 3),
+            200,
+            'twitter:description',
+            'textarea',
+            'Description of content (maximum 200 characters)'
+        );
 
         $data['twitter_image'] = self::fillFieldContent(
-            'https://via.placeholder.com/150',200,
-            'twitter:image','text',
+            'https://via.placeholder.com/150',
+            200,
+            'twitter:image',
+            'text',
             'URL of image to use in the card. 
                                 Images must be less than 5MB in size. 
-                                JPG, PNG, WEBP and GIF formats are supported.');
+                                JPG, PNG, WEBP and GIF formats are supported.'
+        );
 
         $data['twitter_site'] = self::fillFieldContent(
-            'https://twitter.com/',50,
-            'twitter:site','test',
-            '@username of website. Either twitter:site or twitter:site:id is required.');
+            'https://twitter.com/',
+            50,
+            'twitter:site',
+            'test',
+            '@username of website. Either twitter:site or twitter:site:id is required.'
+        );
 
         $data['twitter_title'] = self::fillFieldContent(
-            $faker->text(50),70,
-            'twitter:title','text',
-            'Title of content (max 70 characters).');
+            $faker->text(50),
+            70,
+            'twitter:title',
+            'text',
+            'Title of content (max 70 characters).'
+        );
 
         return $data;
-
-
     }
     //-------------------------------------------------------
     public static function setFacebookContent()
@@ -623,31 +629,41 @@ class CmsSeeder{
         $faker = \Faker\Factory::create();
 
         $data['og_description'] = self::fillFieldContent(
-            $faker->realText(200, 3),200,
-            'og:description','textarea',
-            'Description of content (maximum 200 characters)');
+            $faker->realText(200, 3),
+            200,
+            'og:description',
+            'textarea',
+            'Description of content (maximum 200 characters)'
+        );
 
         $data['og_image'] = self::fillFieldContent(
-            'https://via.placeholder.com/150',200,
-            'og:image','text',
+            'https://via.placeholder.com/150',
+            200,
+            'og:image',
+            'text',
             'URL of image to use in the card. 
                                 Images must be less than 5MB in size. 
-                                JPG, PNG, WEBP and GIF formats are supported.');
+                                JPG, PNG, WEBP and GIF formats are supported.'
+        );
 
         $data['og_title'] = self::fillFieldContent(
-            $faker->text(50),70,
-            'og:title','text',
-            'Title of content (max 70 characters).');
+            $faker->text(50),
+            70,
+            'og:title',
+            'text',
+            'Title of content (max 70 characters).'
+        );
 
         return $data;
-
-
     }
     //-------------------------------------------------------
-    public static function fillFieldContent($content,$maxlength,
-                                            $name, $type = 'text',
-                                            $message = null)
-    {
+    public static function fillFieldContent(
+        $content,
+        $maxlength,
+        $name,
+        $type = 'text',
+        $message = null
+    ) {
 
         $response = [
             'content' => $content,
@@ -656,12 +672,10 @@ class CmsSeeder{
             'type' => $type,
         ];
 
-        if($message){
+        if ($message) {
             $response['message'] = $message;
         }
         return $response;
-
-
     }
 
 
@@ -674,8 +688,7 @@ class CmsSeeder{
             ->where('slug', $menu_slug)
             ->first();
 
-        if(!$menu)
-        {
+        if (!$menu) {
             $data = [
                 'vh_theme_location_id'  => $theme_location->id,
                 'name'  => Str::title($menu_slug),
@@ -699,11 +712,11 @@ class CmsSeeder{
 
         $theme = self::getTheme($theme_slug);
 
-        if(is_array($theme)
+        if (
+            is_array($theme)
             && isset($theme['status'])
             && $theme['status'] == 'failed'
-        )
-        {
+        ) {
             return $theme;
         }
 
@@ -711,14 +724,13 @@ class CmsSeeder{
 
         $list = self::getJsonData($file_path);
 
-        if(count($list) < 1)
-        {
+        if (count($list) < 1) {
             return false;
         }
 
-        foreach ($list as $item){
+        foreach ($list as $item) {
 
-            if(!isset($item['slug']) || !$item['slug']){
+            if (!isset($item['slug']) || !$item['slug']) {
                 $item['slug'] = Str::slug($item['name']);
             }
 
@@ -728,7 +740,7 @@ class CmsSeeder{
 
             $item['vh_menu_id'] = $menu->id;
 
-            if($item['type'] = 'content'){
+            if ($item['type'] = 'content') {
                 $content = DB::table('vh_cms_contents')
                     ->where('slug', $item['slug'])
                     ->where('vh_theme_id', $theme->id)
@@ -741,46 +753,45 @@ class CmsSeeder{
                     ->where('vh_menu_id', $menu->id)
                     ->where('vh_content_id', $content->id)
                     ->first();
-            }else{
+            } else {
                 $exist = DB::table('vh_cms_menu_items')
                     ->where('slug', $item['slug'])
                     ->where('vh_menu_id', $menu->id)
                     ->first();
             }
 
-            if($item['parent']){
+            if ($item['parent']) {
                 $parent_menu = DB::table('vh_cms_menu_items')
                     ->where('slug', $item['parent'])
                     ->where('vh_menu_id', $menu->id)
                     ->first();
 
-                if(!$parent_menu){
+                if (!$parent_menu) {
                     continue;
                 }
 
-                if(!isset($item['sort']) || !$item['sort']){
-                    if(!isset(${ $item['menu_slug'].'_'.$parent_menu->slug.'_sort' })){
-                        ${ $item['menu_slug'].'_'.$parent_menu->slug.'_sort' } = 0;
-                    }else{
-                        ${ $item['menu_slug'].'_'.$parent_menu->slug.'_sort' }++;
+                if (!isset($item['sort']) || !$item['sort']) {
+                    if (!isset(${$item['menu_slug'] . '_' . $parent_menu->slug . '_sort'})) {
+                        ${$item['menu_slug'] . '_' . $parent_menu->slug . '_sort'} = 0;
+                    } else {
+                        ${$item['menu_slug'] . '_' . $parent_menu->slug . '_sort'}++;
                     }
                 }
 
-                $item['sort'] = ${ $item['menu_slug'].'_'.$parent_menu->slug.'_sort' };
+                $item['sort'] = ${$item['menu_slug'] . '_' . $parent_menu->slug . '_sort'};
 
                 $item['parent_id'] = $parent_menu->id;
+            } else {
 
-            }else{
-
-                if(!isset($item['sort']) || !$item['sort']){
-                    if(!isset(${ $item['menu_slug'].'_sort' })){
-                        ${ $item['menu_slug'].'_sort' } = 0;
-                    }else{
-                        ${ $item['menu_slug'].'_sort' }++;
+                if (!isset($item['sort']) || !$item['sort']) {
+                    if (!isset(${$item['menu_slug'] . '_sort'})) {
+                        ${$item['menu_slug'] . '_sort'} = 0;
+                    } else {
+                        ${$item['menu_slug'] . '_sort'}++;
                     }
                 }
 
-                $item['sort'] = ${ $item['menu_slug'].'_sort' };
+                $item['sort'] = ${$item['menu_slug'] . '_sort'};
             }
 
             unset($item['parent']);
@@ -788,20 +799,15 @@ class CmsSeeder{
             unset($item['theme_location']);
 
 
-            if(!$exist)
-            {
+            if (!$exist) {
                 DB::table('vh_cms_menu_items')->insert($item);
-            } else{
+            } else {
                 DB::table('vh_cms_menu_items')
                     ->where('slug', $item['slug'])
                     ->where('vh_menu_id', $menu->id)
                     ->update($item);
             }
-
-
         }
-
-
     }
 
     //-------------------------------------------------------
@@ -810,24 +816,23 @@ class CmsSeeder{
 
         $theme = self::getTheme($theme_slug);
 
-        if(is_array($theme)
+        if (
+            is_array($theme)
             && isset($theme['status'])
             && $theme['status'] == 'failed'
-        )
-        {
+        ) {
             return $theme;
         }
 
         $list = self::getJsonData($file_path);
 
-        if(count($list) < 1)
-        {
+        if (count($list) < 1) {
             return false;
         }
 
-        foreach ($list as $item){
+        foreach ($list as $item) {
 
-            if(!isset($item['slug']) || !$item['slug']){
+            if (!isset($item['slug']) || !$item['slug']) {
                 $item['slug'] = Str::slug($item['name']);
             }
 
@@ -843,34 +848,29 @@ class CmsSeeder{
                 ->where('vh_theme_id', $theme->id)
                 ->first();
 
-            if(!isset($item['sort']) || !$item['sort']){
-                if(!isset(${ $item['theme_location'] . '_sort' })){
-                    ${ $item['theme_location'] . '_sort' } = 0;
-                }else{
-                    ${ $item['theme_location'] . '_sort' }++;
+            if (!isset($item['sort']) || !$item['sort']) {
+                if (!isset(${$item['theme_location'] . '_sort'})) {
+                    ${$item['theme_location'] . '_sort'} = 0;
+                } else {
+                    ${$item['theme_location'] . '_sort'}++;
                 }
 
-                $item['sort'] = ${ $item['theme_location'] . '_sort' };
+                $item['sort'] = ${$item['theme_location'] . '_sort'};
             }
 
             unset($item['theme_location']);
 
 
-            if(!$exist)
-            {
+            if (!$exist) {
                 DB::table('vh_cms_blocks')->insert($item);
-            } else{
+            } else {
                 DB::table('vh_cms_blocks')
                     ->where('slug', $item['slug'])
                     ->where('vh_theme_location_id', $theme_location->id)
                     ->where('vh_theme_id', $theme->id)
                     ->update($item);
             }
-
-
         }
-
-
     }
     //-------------------------------------------------------
 

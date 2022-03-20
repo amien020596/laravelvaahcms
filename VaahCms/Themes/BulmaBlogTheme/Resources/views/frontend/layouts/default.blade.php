@@ -7,11 +7,12 @@
 
 
     @if(isset($title) && $title)
-        <title>{{$title}}</title>
-    @elseif(isset($data) && (is_array($data) || is_object($data)) && is_subclass_of($data, 'Illuminate\Database\Eloquent\Model'))
-        {!! get_field($data, 'seo-meta-tags') !!}
+    <title>{{$title}}</title>
+    @elseif(isset($data) && (is_array($data) || is_object($data)) && is_subclass_of($data,
+    'Illuminate\Database\Eloquent\Model'))
+    {!! get_field($data, 'seo-meta-tags') !!}
     @else
-        <title>BlogTheme</title>
+    <title>BlogTheme</title>
     @endif
 
     {!! vh_search_engine_visibility() !!}
@@ -31,11 +32,12 @@
     @yield('vaahcms_extend_frontend_css')
     {!! config('settings.global.script_before_head_close'); !!}
 </head>
-	<body>
+
+<body>
 
     {!! config('settings.global.script_after_body_start'); !!}
 
-	<?php
+    <?php
 
 	//vh_get_modules_extended_views('menu');
 
@@ -52,7 +54,8 @@
 
     @yield('vaahcms_extend_frontend_scripts')
 
-    {!! config('settings.global.script_before_body_close'); !!}
+    {{-- {!! config('settings.global.script_before_body_close'); !!} --}}
+    <script src="{!! mix('/vaahcms/js/bulmablogtheme.js') !!}"></script>
+</body>
 
-	</body>
 </html>
