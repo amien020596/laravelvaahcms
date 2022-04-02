@@ -51,7 +51,7 @@ class PublicController extends Controller
 
     public function content(Request $request, $content_type, $permalink)
     {
-
+        return "masuk ke content";
         $theme_slug = $request->data->theme->slug;
 
         if(!is_null($request->data->template->file_path))
@@ -141,7 +141,6 @@ class PublicController extends Controller
 
     public function searchContents(Request $request)
     {
-
 
 
 

@@ -13,19 +13,19 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(
-    [
-        'prefix'     => 'cms',
-        'namespace' => 'Api',
-    ],
-    function () {
-        //------------------------------------------------
-        Route::get( '/contents-types', 'ContentTypesController@getContentTypeList' );
-        //------------------------------------------------
-        Route::get( '/contents-types/{slug}', 'ContentTypesController@getContentTypeItem' );
-        //------------------------------------------------
-        Route::get( '/contents/{plural_slug}', 'ContentsController@getContentList' );
-        //------------------------------------------------
-        Route::any( '/contents/{singular_slug}/{content_slug}', 'ContentsController@getContentItem' );
-        //------------------------------------------------
-    });
+// Route::group(
+//     [
+//         'prefix'     => 'cms',
+//         'namespace' => 'Api',
+//     ],
+//     function () {
+//         //------------------------------------------------
+//         Route::get( '/contents-types', 'ContentTypesController@getContentTypeList' );
+//         //------------------------------------------------
+//         Route::get( '/contents-types/{slug}', 'ContentTypesController@getContentTypeItem' );
+//         //------------------------------------------------
+//         Route::get( '/contents/{plural_slug}', 'ContentsController@getContentList' );
+//         //------------------------------------------------
+//         Route::any( '/contents/{singular_slug}/{content_slug}', 'ContentsController@getContentItem' );
+//         //------------------------------------------------
+//     });
