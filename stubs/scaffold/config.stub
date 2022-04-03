@@ -1,14 +1,15 @@
+
 <?php
 
 $composer_data = json_decode(file_get_contents(__DIR__ . '/../composer.json'), true);
 
 $settings = [
-    "name" => 'test',
-    "slug" => "test",
-    "title" => "test",
+    "name" => '$STUDLY_NAME$',
+    "slug" => "$STUDLY_NAME$",
+    "title" => "$STUDLY_NAME$",
     "thumbnail" => "https://placehold.jp/300x160.png",
-    "excerpt" => "test",
-    "description" => "test",
+    "excerpt" => "$STUDLY_NAME$",
+    "description" => "$STUDLY_NAME$",
     "download_link" => "",
     "author_name" => "amien",
     "author_website" => "",
@@ -17,7 +18,7 @@ $settings = [
     "is_sample_data_available" => false,
     "db_table_prefix" => "",
     "providers" => [
-        "\\VaahCms\\Modules\\Cms\\Providers\\TestServiceProvider"
+        "\\VaahCms\\Modules\\Cms\\Providers\\$CLASS$"
     ],
     "aside-menu-order" => null
 ];

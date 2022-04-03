@@ -1,6 +1,8 @@
 {
     "name": "$VENDOR$/$LOWER_NAME$",
     "description": "",
+    "version": "1.0",
+    "provider":"VaahCms\\Modules\\$STUDLY_NAME$\\Providers\\$CLASS$",
     "authors": [
         {
             "name": "$AUTHOR_NAME$",
@@ -9,7 +11,7 @@
     ],
     "extra": {
         "laravel": {
-            "providers": [],
+            "providers": ["VaahCms\\Modules\\$STUDLY_NAME$\\Providers\\$CLASS$"],
             "aliases": {
 
             }

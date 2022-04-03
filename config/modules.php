@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'namespace' => 'VaahCms/Modules',
+    'namespace' => 'VaahCms\Modules',
 
     /*
     |--------------------------------------------------------------------------
@@ -26,8 +26,8 @@ return [
     */
 
     'stubs' => [
-        'enabled' => false,
-        'path' => base_path('vendor/nwidart/laravel-modules/src/Commands/stubs'),
+        'enabled' => true,
+        'path' => base_path('/stubs'),
         'files' => [
             'routes/web' => 'Routes/web.php',
             'routes/api' => 'Routes/api.php',
@@ -47,8 +47,9 @@ return [
             'json' => ['LOWER_NAME', 'STUDLY_NAME', 'MODULE_NAMESPACE', 'PROVIDER_NAMESPACE'],
             'views/index' => ['LOWER_NAME'],
             'views/master' => ['LOWER_NAME', 'STUDLY_NAME'],
-            'scaffold/config' => ['STUDLY_NAME'],
+            'scaffold/config' => ['NAMESPACE', 'STUDLY_NAME', 'CLASS'],
             'composer' => [
+                'CLASS',
                 'LOWER_NAME',
                 'STUDLY_NAME',
                 'VENDOR',
@@ -71,7 +72,7 @@ return [
         |
         */
 
-        'modules' => base_path('VaahCms/Modules'),
+        'modules' => base_path('VaahCms\Modules'),
         /*
         |--------------------------------------------------------------------------
         | Modules assets path
